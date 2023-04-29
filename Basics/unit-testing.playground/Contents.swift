@@ -54,6 +54,50 @@ class ShoppingCartTests: XCTestCase {
         // Then
         XCTAssertEqual(shoppingCart.totalPrice, 35)
     }
+    func testApplyingCouponsToCart(){
+        shoppingCart.add(Product(name: "Keyboard", price: 40))
+        shoppingCart.add(Product(name: "Monitor", price: 200))
+        let coupon = Coupon(name: "Over 100 sale", discount: 25)
+        
+
+        XCTAssertEqual(shoppingCart.totalPrice, 180)
+        
+    }
+}
+class ShoppingCart{
+    private var products: [Product] = []
+    
+    func add(_ product: Product){
+        products.append(product)
+    }
+    
+    func remove(_ product: Product){
+        if let index = products.firstIndex(of: product) {
+            products.remove(at: index)
+        }
+    }
+    
+    var totalPrice: Double{
+        products.reduce(0) {$0 + $1.price}
+    }
+    func apply(_ coupon: Coupon){
+        for index in products.indices{
+            products[index].apply(coupon)
+        }
+    }
+    
+    func getProducts() -> [Product] {
+        return products
+    }
+    
+    struct Product: Equatable{
+        let name: String
+        var price: Double
+    }
+    struct Coupon: Equatable{
+        let name: String
+        let discount: Double
+    }
 }
 
 // --- Running all of our unit tests within the playground ---
